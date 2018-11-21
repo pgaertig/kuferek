@@ -1,0 +1,8 @@
+github.com/pkg/xattr v0.4.0 h1:OacIpDCc4H+4b/bWpYBLOT5gXk7G/jwx5O1D8x8Zewo=
+github.com/pkg/xattr v0.4.0/go.mod h1:W2cGD0TBEus7MkUgv0tNZ9JutLtVO3cXu+IBRuHqnFs=
+github.com/spf13/cobra v0.0.3 h1:ZlrZ4XsMRm04Fr5pSFxBgfND2EBVa1nLpiy1stUsX/8=
+github.com/spf13/cobra v0.0.3/go.mod h1:1l0Ry5zgKvJasoi3XT1TypsSe7PqH0Sj9dhYf7v3XqQ=
+github.com/spf13/pflag v1.0.3 h1:zPAT6CGy6wXeQ7NtTnaTerfKOsV6V6F8agHXFiazDkg=
+github.com/spf13/pflag v1.0.3/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnInEg4=
+golang.org/x/sys v0.0.0-20181021155630-eda9bb28ed51 h1:GNXpDwiINQORfoRpKYZBUNeIGY4giY2DonS5etRdlnE=
+golang.org/x/sys v0.0.0-20181021155630-eda9bb28ed51/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
