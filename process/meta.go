@@ -1,13 +1,13 @@
 package process
 
 import (
-	"os"
 	"fmt"
-	"strings"
 	"github.com/pkg/xattr"
+	"os"
+	"strings"
 )
 
-func makeMeta(contentHash string, file os.FileInfo) (string) {
+func makeMeta(contentHash string, file os.FileInfo) string {
 	return fmt.Sprintf("%s,%s,%s", contentHash, fileSizeStr(file), fileTimeStr(file))
 }
 
@@ -24,7 +24,9 @@ func getMetaSha256(metaStr string) (result string) {
 func updateMeta(path string, f os.FileInfo) string {
 	sha256 := fileSha256(path)
 	meta := makeMeta(sha256, f)
-	xattr.Set(path, "user.kuferek", []byte(meta))
+	if err := xattr.Set(path, "user.kuferek", []byte(meta)); err != nil {
+		panic(err)
+	}
 	xattr.Set(path, "user.sha256", []byte(sha256))
 	return meta
 }
@@ -36,7 +38,6 @@ func readMeta(path string) (result string) {
 	}
 	return
 }
-
 
 func validateMeta(metaStr string, file os.FileInfo, path string, content bool) (validMeta string) {
 	if content {

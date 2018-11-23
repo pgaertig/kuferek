@@ -58,3 +58,20 @@ func EnsureRepo(dir string) error {
 
 	return nil
 }
+
+func EnsureDifferentRepos(dir1 string, dir2 string) error {
+	if err := EnsureRepo(dir1); err != nil {
+		return err
+	}
+	if err := EnsureRepo(dir2); err != nil {
+		return err
+	}
+
+	stat1, _ := os.Stat(dir1)
+	stat2, _ := os.Stat(dir2)
+
+	if os.SameFile(stat1, stat2) {
+		return &repoError{dir2, "Repos are the same directory"}
+	}
+	return nil
+}
