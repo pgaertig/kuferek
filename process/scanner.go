@@ -9,6 +9,11 @@ import (
 func ScanDir(dir string, verify bool) (int, error) {
 	counter := 0
 	fmt.Printf("#Scanning: %s\n", dir)
+
+	if err := EnsureRepo(dir); err != nil {
+		return 0, err
+	}
+
 	visit := func(path string, f os.FileInfo, err error) error {
 		if f.IsDir() && path != dir {
 			fmt.Printf("#At: %s (processed %d)\n", path, counter)
@@ -31,18 +36,17 @@ func scanFile(path string, f os.FileInfo, verify bool) (sha256 string) {
 
 	if meta == "" {
 		meta = updateMeta(path, f)
-		fmt.Printf("+%s %s\n", meta, path)
+		fmt.Printf("+ %s %s\n", meta, path)
 	} else {
 		validMeta := validateMeta(meta, f, path, verify)
 		if validMeta != meta {
-			fmt.Printf("-%s %s\n", meta, path)
-			fmt.Printf("+%s %s\n", validMeta, path)
+			fmt.Printf("- %s %s\n", meta, path)
+			fmt.Printf("+ %s %s\n", validMeta, path)
 			meta = validMeta
 		} else {
-			fmt.Printf("=%s %s\n", meta, path)
+			fmt.Printf("= %s %s\n", meta, path)
 		}
 	}
 
 	return getMetaSha256(meta)
 }
-

@@ -6,20 +6,21 @@ import (
 	"log"
 )
 
-
 var verify bool
 
 var cmdScan = &cobra.Command{
-	Use:   "scan",
-	Short: "Scan copy and calculate checksums",
+	Use:   "scan [directory]",
+	Short: "Scan directory and calculate checksums",
 	Long: `
-The "scan" command scans directory for files and calculates their checksums (SHA256).
+The "scan" command scans directory of files and calculates their checksums (SHA256).
 `,
 	DisableAutoGenTag: true,
+	Args:              cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Printf("#Scanning: %s", master)
-		counter, err := process.ScanDir(master, verify)
-		log.Printf("#Scanned: %s (%d files)", master, counter)
+		dir := args[0]
+		log.Printf("# Scanning: %s", dir)
+		counter, err := process.ScanDir(dir, verify)
+		log.Printf("# Scanned: %s (%d files)", dir, counter)
 		return err
 	},
 }

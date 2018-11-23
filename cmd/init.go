@@ -2,17 +2,22 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"kuferek/process"
+	"log"
 )
 
 var cmdInit = &cobra.Command{
-	Use:   "init",
-	Short: "Initialize master copy",
+	Use:   "init [directory]",
+	Short: "Initialize directory as repository",
 	Long: `
-The "init" command initializes a new master copy.
+The "init" command initializes a new repository directory.
 `,
 	DisableAutoGenTag: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return nil
+		dir := args[0]
+		log.Printf("# Initializing repo: %s", dir)
+		err := process.InitRepo(dir, false)
+		return err
 	},
 }
 
