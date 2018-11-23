@@ -29,9 +29,9 @@ func ScanDir(dir string, verify bool) (int, error) {
 }
 
 type HashItem struct {
-	hash      string
-	path      string
-	direction int
+	hash string
+	path string
+	size int64
 }
 
 type Comparison struct {
@@ -39,36 +39,56 @@ type Comparison struct {
 	Dir2 []string
 }
 
-func mapDir(dir string, verifyContent bool) (map[string]HashItem, error) {
-	fileMap := make(map[string]HashItem)
+type ScannedFileFunc func(path string, f os.FileInfo, hash string) error
+
+func mapDir(dir string, verifyContent bool) (fileMap map[string]HashItem, err error) {
+	fileList, err := listDir(dir, verifyContent)
+
+	if err != nil {
+		return
+	}
+
+	for _, item := range fileList {
+		fileMap[item.hash] = item
+	}
+
+	return
+}
+
+func scanOneDir(dir string, verifyContent bool, fileFunc ScannedFileFunc) (err error) {
 	fmt.Printf("# Scanning: %s\n", dir)
-	visit1 := func(path string, f os.FileInfo, err error) error {
+	visit := func(path string, f os.FileInfo, err error) error {
 		if f.Mode().IsRegular() {
 			sha256 := scanFile(path, f, verifyContent)
-			fileMap[sha256] = HashItem{sha256, path, 1}
+			fileFunc(path, f, sha256)
 		}
+		return err
+	}
+	err = filepath.Walk(dir, visit)
+	return
+}
+
+func listDir(dir string, verifyContent bool) (fileList []HashItem, err error) {
+	err = scanOneDir(dir, verifyContent, func(path string, f os.FileInfo, hash string) error {
+		fileList = append(fileList, HashItem{hash, path, f.Size()})
 		return nil
-	}
-	err := filepath.Walk(dir, visit1)
-	if err != nil {
-		return nil, err
-	}
-	return fileMap, nil
+	})
+	return
 }
 
 func Compare(dir1 string, dir2 string, verifyContent bool) (comparison *Comparison, err error) {
 	if err = EnsureDifferentRepos(dir1, dir2); err != nil {
-		return nil, err
+		return
 	}
 
 	map1, err := mapDir(dir1, verifyContent)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	map2, err := mapDir(dir2, verifyContent)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	var list1 []string
