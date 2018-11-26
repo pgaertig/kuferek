@@ -7,17 +7,21 @@ import (
 )
 
 var cmdInit = &cobra.Command{
-	Use:   "init [directory]",
+	Use:   "init <directory> [directory]...",
 	Short: "Initialize directory as repository",
 	Long: `
 The "init" command initializes a new repository directory.
 `,
 	DisableAutoGenTag: true,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		dir := args[0]
-		log.Printf("# Initializing repo: %s", dir)
-		err := process.InitRepo(dir, false)
-		return err
+	Args:              cobra.MinimumNArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) (error) {
+		for _, dir := range args {
+			log.Printf("# Initializing repo: %s", dir)
+			if err := process.InitRepo(dir, false); err != nil {
+				log.Fatal(err)
+			}
+		}
+		return nil
 	},
 }
 

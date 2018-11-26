@@ -17,11 +17,15 @@ The "scan" command scans directory of files and calculates their checksums (SHA2
 	DisableAutoGenTag: true,
 	Args:              cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		dir := args[0]
-		log.Printf("# Scanning: %s", dir)
-		counter, err := process.ScanDir(dir, verify)
-		log.Printf("# Scanned: %s (%d files)", dir, counter)
-		return err
+		for _, dir := range args {
+			log.Printf("# Scanning: %s", dir)
+			counter, err := process.ScanDir(dir, verify)
+			if err != nil {
+				log.Fatal(err)
+			}
+			log.Printf("# Scanned: %s (%d files)", dir, counter)
+		}
+		return nil
 	},
 }
 

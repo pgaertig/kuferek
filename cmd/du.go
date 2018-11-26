@@ -7,12 +7,12 @@ import (
 )
 
 var cmdDu = &cobra.Command{
-	Use:               "du [directory]",
+	Use:               "du <directory> [directory]...",
 	Short:             "Show disk usage by directory, real and dedup",
 	DisableAutoGenTag: true,
+	Args:              cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		dir := args[0]
-		stats, err := process.DiskUsage(dir, false)
+		stats, err := process.DiskUsage(args, false)
 		fmt.Printf("Files count: %d\n", stats.Count)
 		fmt.Printf("Unique files: %d\n", stats.Unique)
 		fmt.Printf("Real usage: %d\n", stats.Real)

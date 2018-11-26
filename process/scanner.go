@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 )
 
 func ScanDir(dir string, verify bool) (int, error) {
@@ -48,6 +49,7 @@ func mapDir(dir string, verifyContent bool) (fileMap map[string]HashItem, err er
 		return
 	}
 
+	fileMap = make(map[string]HashItem)
 	for _, item := range fileList {
 		fileMap[item.hash] = item
 	}
@@ -106,6 +108,9 @@ func Compare(dir1 string, dir2 string, verifyContent bool) (comparison *Comparis
 		}
 	}
 
+	sort.Strings(list1)
+	sort.Strings(list2)
+
 	return &Comparison{list1, list2}, nil
 }
 
@@ -121,7 +126,7 @@ func scanFile(path string, f os.FileInfo, verify bool) (sha256 string) {
 			fmt.Printf("- %s %s\n", meta, path)
 			fmt.Printf("+ %s %s\n", validMeta, path)
 			meta = validMeta
-		} else {
+		} else if verify {
 			fmt.Printf("= %s %s\n", meta, path)
 		}
 	}
