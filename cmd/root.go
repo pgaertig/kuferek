@@ -5,7 +5,7 @@ import (
 )
 
 var master string
-var dir string
+var debug bool
 
 // cmdRoot is the base command when no other command has been specified.
 var cmdRoot = &cobra.Command{
@@ -16,6 +16,7 @@ var cmdRoot = &cobra.Command{
 
 func init() {
 	cmdRoot.PersistentFlags().StringVarP(&master, "master", "m", ".", "master copy (default is current directory)")
+	cmdRoot.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "debug output")
 }
 
 func Start() {
