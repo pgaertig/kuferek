@@ -70,6 +70,9 @@ func copyRelativePath(sourcePath string, sourceDir string, targetDir string, ove
 
 	if os.IsNotExist(err) || overwrite {
 		err = copyFile(sourcePath, targetPath)
+		if err == nil {
+			err = copyFileTimes(sourcePath, targetPath)
+		}
 		return err == nil, err
 	}
 
@@ -97,5 +100,15 @@ func copyFile(src, dst string) (err error) {
 		return
 	}
 	err = out.Sync()
+	return
+}
+
+func copyFileTimes(src, dst string) (err error) {
+	stat, err := os.Stat(src)
+
+	if err == nil {
+		err = os.Chtimes(dst, stat.ModTime(), stat.ModTime())
+	}
+
 	return
 }
