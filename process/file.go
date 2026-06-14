@@ -6,12 +6,27 @@ import (
 	"strconv"
 	"encoding/binary"
 	"crypto/sha256"
+	"fmt"
 	"io"
 	"encoding/hex"
 )
 
 func fileTimeStr(file os.FileInfo) string {
 	return file.ModTime().UTC().Format(time.RFC3339)
+}
+
+// humanizeBytes formats a byte count using IEC binary units (B, KiB, MiB, ...).
+func humanizeBytes(n int64) string {
+	const unit = 1024
+	if n < unit {
+		return fmt.Sprintf("%d B", n)
+	}
+	div, exp := int64(unit), 0
+	for v := n / unit; v >= unit; v /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %ciB", float64(n)/float64(div), "KMGTPE"[exp])
 }
 
 func fileSizeStr(file os.FileInfo) string {
